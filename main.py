@@ -69,9 +69,7 @@ def main():
             st.success(COMPLETION_MESSAGE)
             if COMPLETION_CELEBRATION:
                 celebration()
-            if restart_btn:
-                st.session_state.clear()
-                st.rerun()
+            st.session_state.clear()
 
         if st.button('End Recap'):
             st.session_state.clear()
