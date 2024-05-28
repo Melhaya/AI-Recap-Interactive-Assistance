@@ -35,9 +35,3 @@ AI_MODELS = {
     }
 }
 
-# Cost calculation settings (Optional and can be adjusted based on your budget or pricing structure)
-COST_SETTINGS = {
-    "gpt-4-turbo": {"prompt_tokens": 0.01, "completion_tokens": 0.03},
-    "gpt-4o": {"prompt_tokens": 0.005, "completion_tokens": 0.015},
-    "gpt-3.5-turbo": {"prompt_tokens": 0.0005, "completion_tokens": 0.0015}
-}

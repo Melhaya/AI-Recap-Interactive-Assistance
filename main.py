@@ -32,7 +32,7 @@ def main():
 
     # Generate new question based on reset state or if no question is present
     if st.session_state.content is not None and st.session_state.question is None:
-        st.session_state.question = ai_client.generate_question(st.session_state.content)
+        st.session_state.question = ai_client.random_question_generator(st.session_state.content)
 
     # Display the progress and current question
     if st.session_state.question is not None:
