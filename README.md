@@ -60,3 +60,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Support
 
 For support, open an issue on the GitHub repository.
+
+## Reference
+
+The structure and template of this repository were inspired by and adapted from [AI-Microapp-Template-Assistant](https://github.com/jswope00/AI-Microapp-Template-Assistant)
