@@ -18,13 +18,14 @@ COMPLETION_CELEBRATION = True  # Optional, can be set to False if no celebration
 
 # Details for AI model usage
 AI_MODELS = {
-    "gpt-4-turbo": {
-        "model": "gpt-4-turbo",
-        "temperature": 0.5,
-        "max_tokens": 150
-    },
     "gpt-4o": {
         "model": "gpt-4o",
+        "temperature": 0.2,
+        "max_tokens": 150,
+        "frequency_penalty": 0.4
+    },
+    "gpt-4-turbo": {
+        "model": "gpt-4-turbo",
         "temperature": 0.5,
         "max_tokens": 150
     },
