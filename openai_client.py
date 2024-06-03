@@ -19,7 +19,7 @@ class OpenAIClient:
         )
         return response.choices[0].message.content
 
-    def generate_mcq_question(self, content, difficulty):
+    def generate_mcq_question(self, content, difficulty, questions_asked):
         prompt = f"""You are given a file filled with educational content. Your task is to generate one {difficulty} question related to the content. The question must be a Multiple-Choice Question (MCQ). The question should be directly related to the content provided and not include information outside its scope.
 
                 please follow this format:
@@ -35,10 +35,15 @@ class OpenAIClient:
                 
                 {content}
                 
-                Based on the content provided, generate an appropriate {difficulty} question without providing the solution."""
+                Based on the content provided, generate an appropriate {difficulty} question without providing the solution.
+                                
+                Do not repeat any of the following questions: 
+                
+                {questions_asked}
+                """
         return self.get_response(prompt)
 
-    def generate_code_tracing_question(self, content, difficulty):
+    def generate_code_tracing_question(self, content, difficulty, questions_asked):
         prompt = f"""You are given a file filled with educational content. Your task is to generate one {difficulty} question related to the content. The question should be a Code Tracing and Correction question. The question should be directly related to the content provided and not include information outside its scope.
                 provide a code snippet and ask the student to either identify an existing error or bug in the code, or identify the output and the purpose of the code snippet.
             
@@ -46,10 +51,15 @@ class OpenAIClient:
                 
                 {content}
                 
-                Based on the content provided, generate an appropriate {difficulty} question asking the student a single task without providing the solution."""
+                Based on the content provided, generate an appropriate {difficulty} question asking the student a single task without providing the solution.
+                                
+                Do not repeat any of the following questions: 
+                
+                {questions_asked}
+                """
         return self.get_response(prompt)
 
-    def generate_code_completion_question(self, content, difficulty):
+    def generate_code_completion_question(self, content, difficulty,questions_asked):
         prompt = f"""You are given a file filled with educational content. Your task is to generate one {difficulty} question related to the content. The question should be a Code Completion question. The question should be directly related to the content provided and not include information outside its scope.
                 provide a partial code snippet and ask the student to complete the missing parts or functionalities of the code.
                 
@@ -57,16 +67,21 @@ class OpenAIClient:
                 
                 {content}
                 
-                Based on the content provided, generate an appropriate {difficulty} question asking the student to complete the code without providing the solution."""
+                Based on the content provided, generate an appropriate {difficulty} question asking the student to complete the code without providing the solution.
+                
+                Do not repeat any of the following questions: 
+                
+                {questions_asked}
+                """
         return self.get_response(prompt)
 
-    def question_generator(self, content, question_type, difficulty):
+    def question_generator(self, content, question_type, difficulty, questions_asked):
         if question_type == "Multiple-Choice Questions":
-            return self.generate_mcq_question(content, difficulty)
+            return self.generate_mcq_question(content, difficulty, questions_asked)
         elif question_type == "Code Tracing and Correction":
-            return self.generate_code_tracing_question(content, difficulty)
+            return self.generate_code_tracing_question(content, difficulty, questions_asked)
         elif question_type == "Code Completion":
-            return self.generate_code_completion_question(content, difficulty)
+            return self.generate_code_completion_question(content, difficulty, questions_asked)
         else:
             raise ValueError("Unsupported question type")
 
