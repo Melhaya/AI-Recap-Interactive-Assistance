@@ -127,7 +127,7 @@ def main():
                 max_tokens=max_tokens,
                 frequency_penalty=frequency_penalty
             )
-            st.experimental_rerun()  # Refresh the UI to show the question
+            st.rerun()  # Refresh the UI to show the question
 
     # ---------------- Q&A Section (Recap In Progress) ----------------
     if st.session_state.recap_in_progress and st.session_state.question:
@@ -199,7 +199,7 @@ def main():
                 )
                 st.session_state.question = new_question
 
-                st.experimental_rerun()  #needed; the UI will refresh automatically
+                st.rerun()  #needed; the UI will refresh automatically
         else:
             # ---------------- Completion ----------------
             if 'feedback' in st.session_state:
