@@ -1,4 +1,12 @@
-python-dotenv
-openai
 streamlit
-streamlit_extras
+openai
+python-dotenv
+PyPDF2
+pytesseract
+pdf2image
+Pillow
+tiktoken
+faiss-cpu
+numpy
+matplotlib
+streamlit-extras

@@ -1,18 +1,23 @@
 ######## GENERAL APP INFORMATION ##############
 
-APP_TITLE = "AI Recap Interactive Assistant (ARIA)"
-APP_INTRO = """This app assesses the user's understanding based on their responses to AI-generated questions from a case study document. The AI models can provide detailed feedback and guide the user through learning concepts effectively."""
+APP_TITLE = "AI-Powered Recap Interactive Assistant (ARIA)"
+APP_INTRO = """This app assesses the user's understanding based on their responses to AI-generated questions from a course document. The AI models can provide detailed feedback and guide the user through learning concepts effectively."""
 
 APP_HOW_IT_WORKS = """
-This application uses AI to enhance learning through interactive Q&A sessions. It dynamically generates questions related to the course content and provides feedback based on the user's answers. The AI can simulate a tutoring environment, offering insights that help reinforce learning.
+This application uses AI to enhance learning through interactive Q&A sessions. 
+It dynamically generates questions related to the course content and provides feedback based on the user's answers. 
+The AI can simulate a tutoring environment, offering insights that help reinforce learning.
 """
 
-SETUP_INSTRUCTIONS = "You are an AI Recap Interactive Assistant designed to help students review and understand educational content. Your tasks include generating questions (multiple-choice, code reviews, etc.), motivating students, reviewing their answers, and providing corrections and explanations when necessary. Always be positive and motivating\n"
-
-
+SETUP_INSTRUCTIONS = """You are an AI Recap Interactive Assistant designed to help students review and understand educational content. 
+Your tasks include generating questions (multiple-choice, code reviews, etc.), motivating students, reviewing their answers, 
+and providing corrections and explanations when necessary. Always be positive and motivating.
+"""
 
 COMPLETION_MESSAGE = "You've reached the end! I hope you learned something!"
 COMPLETION_CELEBRATION = True  # Optional, can be set to False if no celebration effect is desired.
+
+GENERATE_QUESTION = True
 
 ####### AI CONFIGURATION #############
 
@@ -22,6 +27,12 @@ AI_MODELS = {
         "model": "gpt-4o",
         "temperature": 0.2,
         "max_tokens": 150,
+        "frequency_penalty": 0.4
+    },
+    "gpt-4o mini": {
+        "model": "gpt-4o-mini",
+        "temperature": 0.2,
+        "max_tokens": 1000,
         "frequency_penalty": 0.4
     },
     "gpt-4-turbo": {
@@ -36,3 +47,13 @@ AI_MODELS = {
     }
 }
 
+
+####### COURSE CONFIGURATION #############
+COURSES = {
+    "Python – schnell und intensiv Programmieren lernen": {
+        "PDF_FILE_PATH": "python_2024/PyMOOC.pdf",
+        "CHUNKS_JSON_PATH": "python_2024/lecture_chunks.json",
+        "EMBEDDINGS_NPY_PATH": "python_2024/lecture_embeddings.npy",
+        "FAISS_INDEX_PATH": "python_2024/lecture.index"
+    },
+}
