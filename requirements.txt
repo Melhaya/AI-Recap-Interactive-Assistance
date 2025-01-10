@@ -10,3 +10,4 @@ faiss-cpu
 numpy
 matplotlib
 streamlit-extras
+poppler-utils
