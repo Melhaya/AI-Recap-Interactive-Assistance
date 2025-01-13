@@ -43,3 +43,54 @@ def celebration():
         falling_speed=5,
         animation_length=1,
     )
+
+# Function to add a rotating spinner in the center
+def show_spinner():
+    spinner_css = """
+    <style>
+    /* Spinner Container */
+    .center-spinner {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+    }
+
+    /* Spinner Animation */
+    .spinner {
+        border: 16px solid #f3f3f3;  /* Light gray */
+        border-top: 16px solid #F7A800;  /* Orange */
+        border-right: 16px solid #E03C31;  /* Red/Maroon */
+        border-bottom: 16px solid #8A1538;  /* Darker Maroon */
+        border-left: 16px solid #FFCC00;  /* Gold */
+        border-radius: 50%;
+        width: 140px;
+        height: 140px;
+        animation: spin 1.5s linear infinite;
+    }
+
+    /* Spin Keyframes */
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+
+    <div class="center-spinner">
+        <div class="spinner"></div>
+    </div>
+    """
+    st.markdown(spinner_css, unsafe_allow_html=True)
+
+# Function to remove the spinner
+def hide_spinner():
+    remove_spinner = """
+    <script>
+        const spinner = window.parent.document.querySelector('.center-spinner');
+        if (spinner) {
+            spinner.remove();
+        }
+    </script>
+    """
+    st.markdown(remove_spinner, unsafe_allow_html=True)

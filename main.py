@@ -5,7 +5,9 @@ from services import (
     enable,
     disable,
     check_answer,
-    celebration
+    celebration,
+    show_spinner,
+    hide_spinner
 )
 from config import *
 
@@ -102,6 +104,7 @@ def main():
     # ---------------- Start Recap ----------------
     if not st.session_state.recap_in_progress:
         if st.button("Start Recap"):
+            show_spinner()
             # Mark recap as started
             st.session_state.recap_in_progress = True
 
@@ -140,6 +143,8 @@ def main():
                 max_tokens=max_tokens,
                 frequency_penalty=frequency_penalty
             )
+            hide_spinner()
+            st.session_state.questions_asked.append(st.session_state.question)
             st.rerun()  # Refresh the UI to show the question
 
     # ---------------- Q&A Section (Recap In Progress) ----------------
@@ -179,22 +184,22 @@ def main():
             st.session_state.questions_answered += 1
 
             # Display feedback
-
             st.write("AI Feedback:", feedback)
 
             # Record question & correctness
-            st.session_state.questions_asked.append(st.session_state.question)
             correctness = check_answer(feedback)
             st.session_state.received_feedback.append(correctness or "No definite correctness found")
             if DEBUG:
                 st.write("DEBUG:", dict(zip(st.session_state.questions_asked, st.session_state.received_feedback)))
-
 
         # ---------------- Next Question Logic ----------------
         if st.session_state.questions_answered < number_of_questions:
             # If we haven't reached the total number, allow Next
             next_btn = st.button("Next Question", on_click=enable, args=('submit',))
             if next_btn:
+                show_spinner()
+                if len(st.session_state.questions_asked) > len(st.session_state.received_feedback):
+                    st.session_state.received_feedback.append("Student skipped this question")
                 # Clear old question, but keep recap state
                 st.session_state.question = None
                 st.session_state.feedback = None
@@ -213,8 +218,10 @@ def main():
                     frequency_penalty=frequency_penalty
                 )
                 st.session_state.question = new_question
-
-                st.rerun()  #needed; the UI will refresh automatically
+                st.session_state.questions_asked.append(st.session_state.question)
+                st.write(st.session_state.question)
+                hide_spinner()
+                st.rerun()
         else:
             # ---------------- Completion ----------------
             if 'feedback' in st.session_state:
@@ -256,13 +263,6 @@ def main():
             # Clear everything
             st.session_state.clear()
             st.session_state.recap_in_progress = False
-
-        # ---------------- Restart ----------------
-        #if st.button("Restart Recap"):
-        #    st.session_state.clear()
-        #    st.session_state.recap_in_progress = False
-        #    st.experimental_rerun()
-
 
 if __name__ == "__main__":
     main()
