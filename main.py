@@ -49,17 +49,28 @@ def main():
         st.session_state.user_answer = ""
 
     # ---------------- Course & Model Selection ----------------
+    # 1) Select Course
     course_name = st.selectbox(
         "Choose a course:",
         options=list(COURSES.keys())
     )
-    chosen_course = COURSES[course_name]
+    # 2) Retrieve course data from config
+    course_info = COURSES[course_name]
 
-    model_choice = st.selectbox(
-        "Choose an AI model for generating questions and feedback",
-        options=list(AI_MODELS.keys())
-    )
-    chosen_model_dict = AI_MODELS[model_choice]
+    # Display learning objectives if available
+    course_objectives = course_info.get("OBJECTIVES", [])
+    if course_objectives:
+        selected_objectives = st.multiselect("Pick one or more learning objectives to focus on:", course_objectives)
+    else:
+        selected_objectives = None  # No objectives for this course
+
+    # 3) Choose AI model
+    if DEBUG:
+        model_choice = st.selectbox(
+            "Choose an AI model for generating questions and feedback",
+            options=list(AI_MODELS.keys())
+        )
+    chosen_model_dict = AI_MODELS["gpt-4o mini"]
     chosen_model = chosen_model_dict.get("model", "gpt-3.5-turbo")
     temperature = chosen_model_dict.get("temperature", 0.7)
     max_tokens = chosen_model_dict.get("max_tokens", 150)
@@ -95,24 +106,24 @@ def main():
             st.session_state.recap_in_progress = True
 
             # 1. Load or process PDF -> chunks
-            if os.path.isfile(chosen_course.get("CHUNKS_JSON_PATH")):
-                chunks = load_chunks_from_json(chosen_course.get("CHUNKS_JSON_PATH"))
+            if os.path.isfile(course_info.get("CHUNKS_JSON_PATH")):
+                chunks = load_chunks_from_json(course_info.get("CHUNKS_JSON_PATH"))
             else:
-                chunks = process_pdf_for_rag(pdf_path=chosen_course.get("PDF_FILE_PATH"), chunk_size=1000)
-                save_chunks_to_json(chunks, chosen_course.get("CHUNKS_JSON_PATH"))
+                chunks = process_pdf_for_rag(pdf_path=course_info.get("PDF_FILE_PATH"), chunk_size=1000)
+                save_chunks_to_json(chunks, course_info.get("CHUNKS_JSON_PATH"))
 
             st.session_state.chunks = chunks
             st.session_state.content = "\n".join(chunks)  # Combined text
 
             # 2. Load or create embeddings + FAISS index
-            if os.path.isfile(chosen_course.get("EMBEDDINGS_NPY_PATH")) and os.path.isfile(chosen_course.get("FAISS_INDEX_PATH")):
-                embeddings = load_embeddings_from_npy(chosen_course.get("EMBEDDINGS_NPY_PATH"))
-                faiss_index = load_faiss_index(chosen_course.get("FAISS_INDEX_PATH"))
+            if os.path.isfile(course_info.get("EMBEDDINGS_NPY_PATH")) and os.path.isfile(course_info.get("FAISS_INDEX_PATH")):
+                embeddings = load_embeddings_from_npy(course_info.get("EMBEDDINGS_NPY_PATH"))
+                faiss_index = load_faiss_index(course_info.get("FAISS_INDEX_PATH"))
             else:
                 embeddings = embed_chunks_openai(chunks, model="text-embedding-ada-002")
-                save_embeddings_to_npy(embeddings, chosen_course.get("EMBEDDINGS_NPY_PATH"))
+                save_embeddings_to_npy(embeddings, course_info.get("EMBEDDINGS_NPY_PATH"))
                 faiss_index = create_faiss_index(embeddings)
-                save_faiss_index(faiss_index, chosen_course.get("FAISS_INDEX_PATH"))
+                save_faiss_index(faiss_index, course_info.get("FAISS_INDEX_PATH"))
 
             st.session_state.embeddings = embeddings
             st.session_state.faiss_index = faiss_index
@@ -123,6 +134,8 @@ def main():
                 question_type,
                 difficulty_level,
                 st.session_state.questions_asked,
+                course_objectives,
+                selected_objectives,
                 temperature=temperature,
                 max_tokens=max_tokens,
                 frequency_penalty=frequency_penalty
@@ -173,7 +186,8 @@ def main():
             st.session_state.questions_asked.append(st.session_state.question)
             correctness = check_answer(feedback)
             st.session_state.received_feedback.append(correctness or "No definite correctness found")
-            st.write("DEBUG:", dict(zip(st.session_state.questions_asked, st.session_state.received_feedback)))
+            if DEBUG:
+                st.write("DEBUG:", dict(zip(st.session_state.questions_asked, st.session_state.received_feedback)))
 
 
         # ---------------- Next Question Logic ----------------
@@ -185,7 +199,6 @@ def main():
                 st.session_state.question = None
                 st.session_state.feedback = None
                 st.session_state.user_answer = ""
-                GENERATE_QUESTION = True
 
                 # Generate the NEXT question
                 new_question = ai_client.question_generator(
@@ -193,6 +206,8 @@ def main():
                     question_type,
                     difficulty_level,
                     st.session_state.questions_asked,
+                    course_objectives,
+                    selected_objectives,
                     temperature=temperature,
                     max_tokens=max_tokens,
                     frequency_penalty=frequency_penalty
@@ -207,6 +222,8 @@ def main():
                     st.session_state.content,
                     st.session_state.questions_asked,
                     st.session_state.received_feedback,
+                    course_objectives,
+                    selected_objectives,
                     temperature=temperature,
                     max_tokens=max_tokens,
                     frequency_penalty=frequency_penalty
@@ -226,6 +243,8 @@ def main():
                 st.session_state.content,
                 st.session_state.questions_asked,
                 st.session_state.received_feedback,
+                course_objectives,
+                selected_objectives,
                 temperature=temperature,
                 max_tokens=max_tokens,
                 frequency_penalty=frequency_penalty
@@ -242,7 +261,6 @@ def main():
         #if st.button("Restart Recap"):
         #    st.session_state.clear()
         #    st.session_state.recap_in_progress = False
-        #    GENERATE_QUESTION = True
         #    st.experimental_rerun()
 
 

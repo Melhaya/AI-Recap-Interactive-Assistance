@@ -17,7 +17,7 @@ and providing corrections and explanations when necessary. Always be positive an
 COMPLETION_MESSAGE = "You've reached the end! I hope you learned something!"
 COMPLETION_CELEBRATION = True  # Optional, can be set to False if no celebration effect is desired.
 
-GENERATE_QUESTION = True
+DEBUG = False
 
 ####### AI CONFIGURATION #############
 
@@ -54,6 +54,13 @@ COURSES = {
         "PDF_FILE_PATH": "python_2024/PyMOOC.pdf",
         "CHUNKS_JSON_PATH": "python_2024/lecture_chunks.json",
         "EMBEDDINGS_NPY_PATH": "python_2024/lecture_embeddings.npy",
-        "FAISS_INDEX_PATH": "python_2024/lecture.index"
+        "FAISS_INDEX_PATH": "python_2024/lecture.index",
+        "OBJECTIVES": [
+            "Variables and Data Types",
+            "Control Flow",
+            "Functions",
+            "Object-Oriented Programming",
+            "Error Handling"
+        ]
     },
 }
